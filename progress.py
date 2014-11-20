@@ -6,7 +6,15 @@ from progressbar import ProgressBar, Widget, SimpleProgress, Bar
 from io import SEEK_END
 
 def start_progress(maxval, *widgets):
-    return ProgressBar(widgets=widgets, maxval=maxval).start()
+    return ProgressBar(widgets=intersperse(widgets, ' '), maxval=maxval).start()
+
+def entwine(iterable, seperator):
+    for element in iterable:
+        yield seperator
+        yield element
+
+def intersperse(iterable, seperator):
+    return tuple(entwine(iterable, seperator))[1:]
 
 def progress_file(file, *widgets):
     position = file.tell()
