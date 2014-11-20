@@ -6,8 +6,8 @@
 from fields import *
 from csv import DictWriter
 from itertools import starmap, repeat
-from progressbar import Bar, SimpleProgress
-from progress import start_progress
+from progress import start_progress, BracketBar
+from progressbar import SimpleProgress
 
 def mapformat(format, *args):
     return map(format.format, *args)
@@ -17,7 +17,7 @@ def exec(db, file):
     out.writeheader()
     pbar = start_progress(db.execute(
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
-        .fetchone()[0], Bar(), SimpleProgress())
+        .fetchone()[0], BracketBar(), SimpleProgress())
     for row in db.execute("SELECT {fields} FROM {tables} WHERE {join} AND {keys}".format(
         fields=", ".join(starmap("{0}.{1} as {0}".format, types.items())),
         tables=", ".join(mapformat("Media {}", fields)),

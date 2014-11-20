@@ -2,7 +2,7 @@
 # progress.py
 """progress bar utilities"""
 
-from progressbar import ProgressBar, Widget, SimpleProgress
+from progressbar import ProgressBar, Widget, SimpleProgress, Bar
 from io import SEEK_END
 
 def start_progress(maxval, *widgets):
@@ -33,3 +33,6 @@ class Label(Widget):
 
 def FixedLabel(text, width=20):
     return Label(text[:width-3] + '...' if len(text) > width else text.ljust(width))
+
+def BracketBar(*args, **kwargs):
+    return Bar(left='[', right=']', *args, **kwargs)

@@ -4,8 +4,7 @@
 
 from utils import MedialibProgram
 from sys import stdout, stderr
-from progress import start_progress, FixedLabel, FixedProgress
-from progressbar import Bar
+from progress import start_progress, FixedLabel, FixedProgress, BracketBar
 
 class Export(MedialibProgram):
     def __init__(self):
@@ -49,7 +48,8 @@ class Export(MedialibProgram):
             if nsongs < 1:
                 print(playlist + " is empty", file=stderr)
             else:
-                pbar = start_progress(nsongs, FixedLabel(playlist), Bar(), FixedProgress(13))
+                pbar = start_progress(nsongs,
+                        FixedLabel(playlist), BracketBar(), FixedProgress(13))
                 def export(target):
                     for row in db.execute(
                             "SELECT value, position "
