@@ -4,6 +4,7 @@
 
 from utils import MedialibProgram
 from sys import stdout, stderr
+from progressbar import ProgressBar, Bar, FormatLabel, SimpleProgress
 
 class Export(MedialibProgram):
     def __init__(self):
@@ -42,14 +43,23 @@ class Export(MedialibProgram):
                 with open(out.format(name=playlist), 'w') as file:
                     export(file)
         for playlist, id in playlists.items():
-            def export(target):
-                for row in db.execute(
-                        "SELECT value "
-                        "FROM CollectionIdlists JOIN Media on id=mid "
-                        "WHERE key='url' AND collid='{}' "
-                        "ORDER BY position ASC".format(id)):
-                    print(row["value"], file=target)
-            process(playlist)
+            nsongs = db.execute("SELECT COUNT(mid) FROM CollectionIdlists WHERE collid='{}';"
+                    .format(id)).fetchone()[0]
+            if nsongs < 1:
+                print(playlist + " is empty", file=stderr)
+            else:
+                pbar = ProgressBar(widgets=(FormatLabel(playlist), Bar(), SimpleProgress()),
+                        maxval=nsongs).start()
+                def export(target):
+                    for row in db.execute(
+                            "SELECT value, position "
+                            "FROM CollectionIdlists JOIN Media on id=mid "
+                            "WHERE key='url' AND collid='{}' "
+                            "ORDER BY position ASC".format(id)):
+                        print(row["value"], file=target)
+                        pbar.update(row["position"])
+                process(playlist)
+                pbar.finish()
 
 
 if __name__ == '__main__':

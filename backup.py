@@ -6,6 +6,7 @@
 from fields import *
 from csv import DictWriter
 from itertools import starmap, repeat
+from progressbar import ProgressBar, Bar, SimpleProgress
 
 def mapformat(format, *args):
     return map(format.format, *args)
@@ -13,6 +14,11 @@ def mapformat(format, *args):
 def exec(db, file):
     out = DictWriter(file, fields, extrasaction='ignore')
     out.writeheader()
+    pbar = ProgressBar(
+            widgets=(Bar(), SimpleProgress()),
+            maxval=db.execute(
+                "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
+            .fetchone()[0]).start()
     for row in db.execute("SELECT {fields} FROM {tables} WHERE {join} AND {keys}".format(
         fields=", ".join(starmap("{0}.{1} as {0}".format, types.items())),
         tables=", ".join(mapformat("Media {}", fields)),
@@ -20,6 +26,8 @@ def exec(db, file):
         join=" AND ".join(mapformat("{}.id = {}.id", repeat(key), values))
     )):
         out.writerow(row)
+        pbar.update(pbar.currval + 1)
+    pbar.finish()
 
 if __name__ == '__main__':
     MLibCSVAdapter('w', "Write to a given file instead of the standard output.").run(exec)
