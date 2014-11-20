@@ -5,8 +5,8 @@
 
 from fields import *
 from csv import DictReader
-from progressbar import ProgressBar, Bar, Percentage
-from io import SEEK_END
+from progressbar import Bar, Percentage
+from progress import progress_file
 
 updates = {
     'value': "UPDATE Media SET value='{value}' WHERE key='{field}' AND id={id}",
@@ -14,9 +14,7 @@ updates = {
 }
 
 def exec(db, file):
-    pbar = ProgressBar(widgets=(Bar(), Percentage()),
-            maxval=file.seek(0, SEEK_END)).start()
-    file.seek(0)
+    pbar = progress_file(file, Bar(), Percentage())
     for row in DictReader(file):
         id = db.execute("SELECT id FROM Media WHERE key='{}' AND {}='{}'"
                 .format(key, types[key], row[key])).fetchone()[0]
