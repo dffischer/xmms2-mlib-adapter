@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # import.py
 """Imports m3u-Playlists - textfiles with one song path per line - into xmms2."""
 

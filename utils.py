@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # utils.py
 """Utilities to create programs that transfer data between xmms2 media libraries and files."""
 

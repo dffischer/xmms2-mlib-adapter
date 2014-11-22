@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # restore.py
 """Restores song statistics - timesplayed and laststarted
 - from a csv file into an xmms2 media library."""

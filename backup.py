@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # backup.py
 """Backs up song statistics - timesplayed and laststarted
 - from an xmms2 media library to a csv file."""

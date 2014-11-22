@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # fields.py
 """Fields and their types to backup and restore."""
 

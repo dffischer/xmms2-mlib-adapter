@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # export.py
 """Exports playlists to plain text files - which are indeed m3u8-Playlists."""
 

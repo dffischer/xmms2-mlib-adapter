@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # progress.py
 """progress bar utilities"""
 
