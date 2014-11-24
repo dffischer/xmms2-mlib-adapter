@@ -8,18 +8,15 @@ from csv import DictReader
 from progress import progress_file, BracketBar
 from progressbar import Percentage
 
-updates = {
-    'value': "UPDATE Media SET value='{value}' WHERE key='{field}' AND id={id}",
-    'intval': "UPDATE Media SET value='{value}', intval={value} WHERE key='{field}' AND id={id}"
-}
-
 def exec(db, file):
     pbar = progress_file(file, BracketBar(), Percentage())
     for row in DictReader(file):
-        id = db.execute("SELECT id FROM Media WHERE key='{}' AND {}='{}'"
-                .format(key, types[key], row[key])).fetchone()[0]
+        id = db.execute("SELECT id FROM Media WHERE key='{}' AND value='{}'"
+                .format(key, row[key])).fetchone()[0]
         for field in values:
-            db.execute(updates[types[field]].format(value=row[field], field=field, id=id))
+            db.execute(
+                    "UPDATE Media SET value='{value}', intval={value} WHERE key='{field}' AND id={id}"
+                    .format(value=row[field], field=field, id=id))
         pbar.update(file.buffer.tell())
     pbar.finish()
 

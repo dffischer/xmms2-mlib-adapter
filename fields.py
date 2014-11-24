@@ -2,10 +2,6 @@
 # fields.py
 """Fields and their types to backup and restore."""
 
-types = {
-    "url": 'value',
-    "timesplayed": 'intval',
-    "laststarted": 'intval'}
 key = "url"
 values = {"timesplayed", "laststarted"}
 fields = tuple([key] + sorted(values))

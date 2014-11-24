@@ -18,12 +18,14 @@ def exec(db, file):
     pbar = start_progress(db.execute(
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
         .fetchone()[0], BracketBar(), SimpleProgress())
-    for row in db.execute("SELECT {fields} FROM {tables} WHERE {join} AND {keys}".format(
-        fields=", ".join(starmap("{0}.{1} as {0}".format, types.items())),
-        tables=", ".join(mapformat("Media {}", fields)),
-        keys=" AND ".join(mapformat("{0}.key = '{0}'", fields)),
-        join=" AND ".join(mapformat("{}.id = {}.id", repeat(key), values))
-    )):
+    for row in db.execute(
+            "SELECT {key}.value as {key}, {values} FROM {tables} WHERE {join} AND {keys}"
+            .format(
+                key=key,
+                values=", ".join(mapformat("{0}.intval as {0}", values)),
+                tables=", ".join(mapformat("Media {}", fields)),
+                keys=" AND ".join(mapformat("{0}.key = '{0}'", fields)),
+                join=" AND ".join(mapformat("{}.id = {}.id", repeat(key), values)))):
         out.writerow(row)
         pbar.update(pbar.currval + 1)
     pbar.finish()
