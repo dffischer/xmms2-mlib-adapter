@@ -5,12 +5,8 @@
 
 from fields import *
 from csv import DictWriter
-from itertools import starmap, repeat
 from progress import start_progress, BracketBar
 from progressbar import SimpleProgress
-
-def mapformat(format, *args):
-    return map(format.format, *args)
 
 def exec(db, file):
     out = DictWriter(file, fields, extrasaction='ignore')
@@ -18,14 +14,7 @@ def exec(db, file):
     pbar = start_progress(db.execute(
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
         .fetchone()[0], BracketBar(), SimpleProgress())
-    for row in db.execute(
-            "SELECT {key}.value as {key}, {values} FROM {tables} WHERE {join} AND {keys}"
-            .format(
-                key=key,
-                values=", ".join(mapformat("{0}.intval as {0}", values)),
-                tables=", ".join(mapformat("Media {}", fields)),
-                keys=" AND ".join(mapformat("{0}.key = '{0}'", fields)),
-                join=" AND ".join(mapformat("{}.id = {}.id", repeat(key), values)))):
+    for row in db.execute(infoquery):
         out.writerow(row)
         pbar.update(pbar.currval + 1)
     pbar.finish()
