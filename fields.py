@@ -6,7 +6,9 @@ key = "url"
 values = {"timesplayed", "laststarted"}
 fields = tuple([key] + sorted(values))
 
+
 from utils import MedialibProgram, SingleFileProgram
+
 class MLibCSVAdapter(MedialibProgram, SingleFileProgram):
     def __init__(self, mode, filedesc):
         super().__init__(mode, filedesc, ext=".csv")
@@ -14,13 +16,13 @@ class MLibCSVAdapter(MedialibProgram, SingleFileProgram):
 
 from itertools import starmap, repeat
 
-def mapformat(format, *args):
-    return map(format.format, *args)
+def sql_compose(separator, format, *args):
+    return separator.join(map(format.format, *args))
 
 infoquery = "SELECT {key}.id as id, {key}.value as {key}, {values} FROM {tables} " \
         "WHERE {join} AND {keys};".format(
                 key=key,
-                values=", ".join(mapformat("{0}.intval as {0}", values)),
-                tables=", ".join(mapformat("Media {}", fields)),
-                keys=" AND ".join(mapformat("{0}.key = '{0}'", fields)),
-                join=" AND ".join(mapformat("{}.id = {}.id", repeat(key), values)))
+                values=sql_compose(", ", "{0}.intval as {0}", values),
+                tables=sql_compose(", ", "Media {}", fields),
+                keys=sql_compose(" AND ", "{0}.key = '{0}'", fields),
+                join=sql_compose(" AND ", "{}.id = {}.id", repeat(key), values))
