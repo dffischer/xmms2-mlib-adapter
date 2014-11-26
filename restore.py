@@ -11,13 +11,21 @@ from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
 
+null = type('Null', (object, ), {
+    '__call__': lambda *k, **kw: None,
+    '__getattribute__': lambda self, _: self,
+    '__doc__': "Lazy object that does nothing and only knows itself"
+})()
+
 class Restore(MLibCSVAdapter):
     def __init__(self):
         super().__init__('r', "Read from a given file instead of the standard input.")
-        self.add_argument("-r", "--rejects", metavar="rejects.csv", type=FileType('w'), help=
-                """Songs that could not be found in the library will not be added anew.
-                This options writes the rejected entries to a file unchanged instead of
-                issuing error messages about them. - directs to the standard output.""")
+        self.add_argument("-r", "--rejects", metavar="rejects.csv",
+                nargs="?", type=FileType('w'), const=null, help="""
+                Songs that could not be found in the library will not be added
+                anew. Use this option without any filename to suppress errors
+                about them. If you also specify a file, the entries will be
+                written there unchanged. - directs to the standard output.""")
 
     def exec(self, db, file, rejects):
         with ExitStack() as stack:
