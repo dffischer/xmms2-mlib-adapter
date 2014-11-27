@@ -30,11 +30,13 @@ class Restore(MLibCSVAdapter):
 
     def exec(self, db, file, rejects):
         with ExitStack() as stack:
+            def prepare_writer(file):
+                stack.push(file)
+                writer = DictWriter(file, fields)
+                writer.writeheader()
+                return writer
             if rejects:
-                stack.push(rejects)
-                rejects = DictWriter(rejects, fields)
-                rejects.writeheader()
-                handle_missing = rejects.writerow
+                handle_missing = prepare_writer(rejects).writerow
             else:
                 def handle_missing(row):
                     print("\033[K\r{} is not in library".format(row[key]), file=stderr)
