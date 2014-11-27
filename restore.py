@@ -52,23 +52,25 @@ class Restore(MLibCSVAdapter):
 class Insert(object):
     """Inserts values into the database unconditionally."""
 
+    query = "SELECT id FROM Media WHERE key='{}' AND value='{{}}'".format(key)
+
     def __init__(self, db, missing_handler):
         self.db = db
         self.handle_missing = missing_handler
 
     def process(self, row):
-        info = self.db.execute("SELECT id FROM Media WHERE key='{}' AND value='{{}}'"
-                .format(key, row[key])).fetchone()
+        info = self.db.execute(self.query.format(row[key])).fetchone()
         if info:
-            for field in values:
-                self.db.execute(
-                        "UPDATE Media SET value='{value}', intval={value} "
-                        "WHERE key='{field}' AND id={id}"
-                        .format(value=row[field], field=field, id=info["id"]))
+            self.update(info, row)
         else:
             self.handle_missing(row)
 
     def update(self, info, newvals):
+        for field in values:
+            self.db.execute(
+                    "UPDATE Media SET value='{value}', intval={value} "
+                    "WHERE key='{field}' AND id={id}"
+                    .format(value=newvals[field], field=field, id=info["id"]))
 
 if __name__ == '__main__':
     Restore().run()
