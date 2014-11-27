@@ -11,6 +11,7 @@ from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
 from functools import partial
+from context import MaybeCallback
 
 null = type('Null', (object, ), {
     '__call__': lambda *k, **kw: None,
@@ -83,14 +84,12 @@ class Update(Insert):
         self.handle_old = old_handler
 
     def update(self, info, newvals):
-        write = False
-        for field in values:
-            if info[field] > int(newvals[field]):
-                return self.handle_old(newvals)
-            elif info[field] < int(newvals[field]):
-                write = True
-        if write:
-            super().update(info, newvals)
+        with MaybeCallback(super().update, info, newvals) as write:
+            for field in values:
+                if info[field] > int(newvals[field]):
+                    return self.handle_old(newvals)
+                elif info[field] < int(newvals[field]):
+                    write.activate()
 
 if __name__ == '__main__':
     Restore().run()
