@@ -40,7 +40,8 @@ class Restore(MLibCSVAdapter):
                 writer = DictWriter(file, fields)
                 writer.writeheader()
                 return writer
-            worker = Insert(db, prepare_writer(rejects).writerow if rejects else
+            worker = Update(partial(self.error, "already up to date or newer"), db,
+                    prepare_writer(rejects).writerow if rejects else
                     partial(self.error, "not in library"))
 
             pbar = progress_file(file, BracketBar(), Percentage())
@@ -71,6 +72,25 @@ class Insert(object):
                     "UPDATE Media SET value='{value}', intval={value} "
                     "WHERE key='{field}' AND id={id}"
                     .format(value=newvals[field], field=field, id=info["id"]))
+
+class Update(Insert):
+    """Only inserts newer values."""
+
+    query = infoquery[:-1] + " AND url.value = '{}'" + infoquery[-1]
+
+    def __init__(self, old_handler, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.handle_old = old_handler
+
+    def update(self, info, newvals):
+        write = False
+        for field in values:
+            if info[field] > int(newvals[field]):
+                return self.handle_old(newvals)
+            elif info[field] < int(newvals[field]):
+                write = True
+        if write:
+            super().update(info, newvals)
 
 if __name__ == '__main__':
     Restore().run()
