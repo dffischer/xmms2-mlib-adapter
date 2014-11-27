@@ -20,8 +20,9 @@ null = type('Null', (object, ), {
 class Restore(MLibCSVAdapter):
     def __init__(self):
         super().__init__('r', "Read from a given file instead of the standard input.")
+        file = FileType('w')
         self.add_argument("-r", "--rejects", metavar="rejects.csv",
-                nargs="?", type=FileType('w'), const=null, help="""
+                nargs="?", type=file, const=null, help="""
                 Songs that could not be found in the library will not be added
                 anew. Use this option without any filename to suppress errors
                 about them. If you also specify a file, the entries will be
