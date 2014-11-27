@@ -40,11 +40,8 @@ class Restore(MLibCSVAdapter):
                 writer = DictWriter(file, fields)
                 writer.writeheader()
                 return writer
-            if rejects:
-                handle_missing = prepare_writer(rejects).writerow
-            else:
-                handle_missing = partial(self.error, "not in library")
-            worker = Insert(db, handle_missing)
+            worker = Insert(db, prepare_writer(rejects).writerow if rejects else
+                    partial(self.error, "not in library"))
 
             pbar = progress_file(file, BracketBar(), Percentage())
             for row in DictReader(file):
