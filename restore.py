@@ -10,6 +10,7 @@ from progressbar import Percentage
 from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
+from functools import partial
 
 null = type('Null', (object, ), {
     '__call__': lambda *k, **kw: None,
@@ -28,6 +29,10 @@ class Restore(MLibCSVAdapter):
                 about them. If you also specify a file, the entries will be
                 written there unchanged. - directs to the standard output.""")
 
+    @staticmethod
+    def error(message, row):
+        print("\033[K\r", row[key], ': ', message, sep='', file=stderr)
+
     def exec(self, db, file, rejects):
         with ExitStack() as stack:
             def prepare_writer(file):
@@ -38,8 +43,7 @@ class Restore(MLibCSVAdapter):
             if rejects:
                 handle_missing = prepare_writer(rejects).writerow
             else:
-                def handle_missing(row):
-                    print("\033[K\r{} is not in library".format(row[key]), file=stderr)
+                handle_missing = partial(self.error, "not in library")
 
             pbar = progress_file(file, BracketBar(), Percentage())
             for row in DictReader(file):
