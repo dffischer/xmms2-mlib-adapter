@@ -5,6 +5,9 @@
 from progressbar import ProgressBar, Widget, SimpleProgress, Bar, Percentage
 from io import SEEK_END
 
+
+# ----- Bars -----
+
 def start_progress(maxval, *widgets):
     return ProgressBar(widgets=intersperse(widgets, ' '), maxval=maxval).start()
 
@@ -21,6 +24,9 @@ def progress_file(file, *widgets):
     bar = start_progress(file.seek(0, SEEK_END), *(widgets + (BracketBar(), Percentage())))
     file.seek(position)
     return bar
+
+
+# ----- Widgets -----
 
 class FixedWidth(Widget):
     def __init__(self, width=15, *args, **kwargs):
