@@ -37,7 +37,7 @@ class Restore(MLibCSVAdapter):
                 written there unchanged. - directs to the standard output.""")
 
     @staticmethod
-    def error(message, row):
+    def warn(message, row):
         print("\033[K\r", row[key], ': ', message, sep='', file=stderr)
 
     def exec(self, db, file, rejects, update):
@@ -49,7 +49,7 @@ class Restore(MLibCSVAdapter):
                 return writer
             worker = (partial(Update, prepare_writer(update).writerow) if update else Insert)(db,
                     prepare_writer(rejects).writerow if rejects else
-                    partial(self.error, "not in library"))
+                    partial(self.warn, "not in library"))
 
             pbar = progress_file(file, BracketBar(), Percentage())
             for row in DictReader(file):
