@@ -30,10 +30,11 @@ class Restore(MLibCSVAdapter):
                 about them. If you also specify a file, the entries will be
                 written there unchanged. - directs to the standard output.""")
         self.add_argument("-u", "--update", metavar="uptodate.csv",
-                type=file, help="""
-                Values already up-to-date or less will be ignored, unless
-                this option is given in which case they are written to the
-                given file unchanged. - directs to the standard output.""")
+                nargs="?", type=file, const=null, help="""
+                Only update values that are greater than their counterparts
+                in the library. Values already up-to-date or less will be
+                ignored, unless a filename is given in which case they are
+                written there unchanged. - directs to the standard output.""")
 
     @staticmethod
     def error(message, row):
@@ -46,9 +47,7 @@ class Restore(MLibCSVAdapter):
                 writer = DictWriter(file, fields)
                 writer.writeheader()
                 return writer
-            worker = Update(prepare_writer(update).writerow if update else
-                    partial(self.error, "already up to date or newer"),
-                    db,
+            worker = (partial(Update, prepare_writer(update).writerow) if update else Insert)(db,
                     prepare_writer(rejects).writerow if rejects else
                     partial(self.error, "not in library"))
 
