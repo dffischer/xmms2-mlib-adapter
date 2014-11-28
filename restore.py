@@ -11,18 +11,13 @@ from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
 from functools import partial
+from cache import Cache, null
 from context import MaybeCallback
-
-null = type('Null', (object, ), {
-    '__call__': lambda *k, **kw: None,
-    '__getattribute__': lambda self, _: self,
-    '__doc__': "Lazy object that does nothing and only knows itself"
-})()
 
 class Restore(MLibCSVAdapter):
     def __init__(self):
         super().__init__('r', "Read from a given file instead of the standard input.")
-        file = FileType('w')
+        file = Cache(FileType('w'))
         self.add_argument("-r", "--rejects", metavar="rejects.csv",
                 nargs="?", type=file, const=null, help="""
                 Songs that could not be found in the library will not be added
@@ -42,6 +37,7 @@ class Restore(MLibCSVAdapter):
 
     def exec(self, db, file, rejects, update):
         with ExitStack() as stack:
+            @Cache.filled({null: null})
             def prepare_writer(file):
                 stack.push(file)
                 writer = DictWriter(file, fields)
