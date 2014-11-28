@@ -4,12 +4,13 @@
 
 from progressbar import ProgressBar, Widget, SimpleProgress, Bar, Percentage
 from io import SEEK_END
+from itertools import islice, chain
 
 
 # ----- Bars -----
 
 def start_progress(maxval, *widgets):
-    return ProgressBar(widgets=intersperse(widgets, ' '), maxval=maxval).start()
+    return ProgressBar(widgets=tuple(intersperse(widgets, ' ')), maxval=maxval).start()
 
 def entwine(iterable, seperator):
     for element in iterable:
@@ -17,11 +18,11 @@ def entwine(iterable, seperator):
         yield element
 
 def intersperse(iterable, seperator):
-    return tuple(entwine(iterable, seperator))[1:]
+    return islice(entwine(iterable, seperator), 1, None)
 
 def progress_file(file, *widgets):
     position = file.tell()
-    bar = start_progress(file.seek(0, SEEK_END), *(widgets + (BracketBar(), Percentage())))
+    bar = start_progress(file.seek(0, SEEK_END), *chain(widgets, (BracketBar(), Percentage())))
     file.seek(position)
     return bar
 
