@@ -4,7 +4,10 @@
 
 from utils import MedialibProgram, MultiFileProgram
 from os.path import basename, splitext
-from progress import progress_file, FixedLabel
+from progress import FileProgress, LabeledProgress
+
+class MultifileProgress(FileProgress, LabeledProgress):
+    pass
 
 class Import(MedialibProgram, MultiFileProgram):
     def __init__(self):
@@ -18,7 +21,7 @@ class Import(MedialibProgram, MultiFileProgram):
 
     def exec(self, db, file, name):
         name = self.format_name(name, file)
-        pbar = progress_file(file, FixedLabel(name))
+        pbar = MultifileProgress(file, name)
         id = db.execute("INSERT INTO CollectionOperators (type) VALUES (9);").lastrowid
         db.execute("INSERT INTO CollectionLabels VALUES ({id}, 1, '{name}');".format(
             id=id, name=name))
@@ -27,7 +30,7 @@ class Import(MedialibProgram, MultiFileProgram):
             db.execute("""INSERT INTO CollectionIdlists VALUES ({id}, {position},
                 (SELECT id FROM Media WHERE key='url' AND value='{url}'));"""
                 .format(id=id, position=position, url=url.strip()))
-            pbar.update(file.buffer.tell())
+            pbar.step()
         pbar.finish()
 
     @staticmethod

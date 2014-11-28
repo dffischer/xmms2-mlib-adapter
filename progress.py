@@ -2,29 +2,9 @@
 # progress.py
 """progress bar utilities"""
 
-from progressbar import ProgressBar, Widget, SimpleProgress, Bar, Percentage
+from progressbar import ProgressBar, Widget, SimpleProgress, Bar, Percentage, Counter, UnknownLength
 from io import SEEK_END
-from itertools import islice, chain
-
-
-# ----- Bars -----
-
-def start_progress(maxval, *widgets):
-    return ProgressBar(widgets=tuple(intersperse(widgets, ' ')), maxval=maxval).start()
-
-def entwine(iterable, seperator):
-    for element in iterable:
-        yield seperator
-        yield element
-
-def intersperse(iterable, seperator):
-    return islice(entwine(iterable, seperator), 1, None)
-
-def progress_file(file, *widgets):
-    position = file.tell()
-    bar = start_progress(file.seek(0, SEEK_END), *chain(widgets, (BracketBar(), Percentage())))
-    file.seek(position)
-    return bar
+from itertools import islice
 
 
 # ----- Widgets -----
@@ -51,3 +31,45 @@ def FixedLabel(text, width=20):
 
 def BracketBar(*args, **kwargs):
     return Bar(left='[', right=']', *args, **kwargs)
+
+
+# ----- Bars -----
+
+def entwine(iterable, seperator):
+    for element in iterable:
+        yield seperator
+        yield element
+
+def intersperse(iterable, seperator):
+    return islice(entwine(iterable, seperator), 1, None)
+
+class OrderlyProgress(ProgressBar):
+    """Base class for custom tailored progress bars. Separates its widgets by spaces."""
+    progress = SimpleProgress
+    def bar(self):
+        return BracketBar(), self.progress()
+    def __init__(self, maxval=UnknownLength, widgets=(), progress=SimpleProgress):
+        super().__init__(widgets=tuple(intersperse(widgets + self.bar(), ' ')), maxval=maxval)
+        self.start()
+    def step(self):
+        self.update(self.currval + 1)
+
+class LabeledProgress(OrderlyProgress):
+    """Prepends a label in front of the bar and fixes all text
+    so that multiple bars atop of each other still look neat."""
+    progress = FixedProgress
+    def __init__(self, name, widgets=(), *args, **kwargs):
+        super().__init__(widgets=(FixedLabel(name), ) + widgets, *args, **kwargs)
+
+class FileProgress(OrderlyProgress):
+    """Progresses the reading status of a file."""
+    progress = Percentage
+    def __init__(self, file, *args, **kwargs):
+        if file.seekable():
+            position = file.tell()
+            super().__init__(maxval=file.seek(0, SEEK_END) + 1, *args, **kwargs)
+            file.seek(position)
+            self.step = lambda: self.update(file.buffer.tell())
+        else:
+            self.bar = lambda: (Counter('%i entries processed'), )
+            super().__init__(*args, **kwargs)

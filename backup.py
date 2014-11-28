@@ -5,18 +5,17 @@
 
 from fields import *
 from csv import DictWriter
-from progress import start_progress, BracketBar
-from progressbar import SimpleProgress
+from progress import OrderlyProgress
 
 def exec(db, file):
     out = DictWriter(file, fields, extrasaction='ignore')
     out.writeheader()
-    pbar = start_progress(db.execute(
+    pbar = OrderlyProgress(db.execute(
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
-        .fetchone()[0], BracketBar(), SimpleProgress())
+        .fetchone()[0])
     for row in db.execute(infoquery):
         out.writerow(row)
-        pbar.update(pbar.currval + 1)
+        pbar.step()
     pbar.finish()
 
 if __name__ == '__main__':

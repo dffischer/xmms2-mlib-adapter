@@ -5,7 +5,7 @@
 
 from fields import *
 from csv import DictReader, DictWriter
-from progress import progress_file
+from progress import FileProgress
 from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
@@ -46,10 +46,10 @@ class Restore(MLibCSVAdapter):
                     prepare_writer(rejects).writerow if rejects else
                     partial(self.warn, "not in library"))
 
-            pbar = progress_file(file)
+            pbar = FileProgress(file)
             for row in DictReader(file):
                 worker.process(row)
-                pbar.update(file.buffer.tell())
+                pbar.step()
             pbar.finish()
 
 class Insert(object):
