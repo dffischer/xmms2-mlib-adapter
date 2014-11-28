@@ -4,8 +4,7 @@
 
 from utils import MedialibProgram, MultiFileProgram
 from os.path import basename, splitext
-from progress import progress_file, FixedLabel, BracketBar
-from progressbar import Percentage
+from progress import progress_file, FixedLabel
 
 class Import(MedialibProgram, MultiFileProgram):
     def __init__(self):
@@ -19,7 +18,7 @@ class Import(MedialibProgram, MultiFileProgram):
 
     def exec(self, db, file, name):
         name = self.format_name(name, file)
-        pbar = progress_file(file, FixedLabel(name), BracketBar(), Percentage())
+        pbar = progress_file(file, FixedLabel(name))
         id = db.execute("INSERT INTO CollectionOperators (type) VALUES (9);").lastrowid
         db.execute("INSERT INTO CollectionLabels VALUES ({id}, 1, '{name}');".format(
             id=id, name=name))

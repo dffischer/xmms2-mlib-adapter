@@ -2,7 +2,7 @@
 # progress.py
 """progress bar utilities"""
 
-from progressbar import ProgressBar, Widget, SimpleProgress, Bar
+from progressbar import ProgressBar, Widget, SimpleProgress, Bar, Percentage
 from io import SEEK_END
 
 def start_progress(maxval, *widgets):
@@ -18,7 +18,7 @@ def intersperse(iterable, seperator):
 
 def progress_file(file, *widgets):
     position = file.tell()
-    bar = start_progress(file.seek(0, SEEK_END), *widgets)
+    bar = start_progress(file.seek(0, SEEK_END), *(widgets + (BracketBar(), Percentage())))
     file.seek(position)
     return bar
 
