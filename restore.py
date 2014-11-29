@@ -59,7 +59,7 @@ class Insert(object):
         self.handle_missing = missing_handler
 
     def process(self, row):
-        info = self.db.execute(self.query.format(self.prefix.prepend(row[key]))).fetchone()
+        info = self.db.execute(self.query(self.prefix.prepend(row[key]))).fetchone()
         if info:
             self.update(info, row)
         else:
@@ -75,7 +75,7 @@ class Insert(object):
 class Update(Insert):
     """Only inserts newer values."""
 
-    query = infoquery[:-1] + " AND url.value = '{}'" + infoquery[-1]
+    query = (infoquery[:-1] + " AND url.value = '{}'" + infoquery[-1]).format
 
     def __init__(self, old_handler, *args, **kwargs):
         super().__init__(*args, **kwargs)
