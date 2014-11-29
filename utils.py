@@ -7,6 +7,9 @@ from sys import modules, stderr
 from os.path import expanduser
 from sqlite3 import connect, Row
 
+
+# ----- basic execution flow -----
+
 class CLProgram(ArgumentParser):
     """Command-line program"""
 
@@ -25,6 +28,8 @@ class CLProgram(ArgumentParser):
     def warn(item, message):
         print("\033[K\r", item, ': ', message, sep='', file=stderr)
 
+
+# ----- media database handling -----
 
 class Prefix(object):
     """prefix to append and remove from strings"""
@@ -65,6 +70,9 @@ class DictRow(Row):
             return self[index]
         except KeyError:
             return default
+
+
+# ----- working with files -----
 
 class FileProgram(CLProgram):
     """Program working with files."""
