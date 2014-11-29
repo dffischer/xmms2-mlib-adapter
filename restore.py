@@ -55,7 +55,7 @@ class Restore(MLibCSVAdapter):
 class Insert(object):
     """Inserts values into the database unconditionally."""
 
-    query = "SELECT id FROM Media WHERE key='{}' AND value='{{}}'".format(key)
+    query = idquery
 
     def __init__(self, db, missing_handler):
         self.db = db

@@ -26,3 +26,4 @@ infoquery = "SELECT {key}.id as id, {key}.value as {key}, {values} FROM {tables}
                 tables=sql_compose(", ", "Media {}", fields),
                 keys=sql_compose(" AND ", "{0}.key = '{0}'", fields),
                 join=sql_compose(" AND ", "{}.id = {}.id", repeat(key), values))
+idquery = "SELECT id FROM Media WHERE key='{}' AND value='{{}}'".format(key)
