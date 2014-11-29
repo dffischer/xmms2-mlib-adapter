@@ -6,6 +6,7 @@ from utils import MedialibProgram, MultiFileProgram
 from os.path import basename, splitext
 from progress import FileProgress, LabeledProgress
 from sys import stderr
+from fields import key
 
 class MultifileProgress(FileProgress, LabeledProgress):
     pass
@@ -29,8 +30,8 @@ class Import(MedialibProgram, MultiFileProgram):
         db.execute("INSERT INTO CollectionAttributes VALUES ({}, 'position', -1);".format(id))
         for position, url in enumerate(file):
             url = url.strip()
-            info = db.execute("SELECT id FROM Media WHERE key='url' AND value='{url}'"
-                    .format(url=url.strip)())
+            info = db.execute("SELECT id FROM Media WHERE key='{}' AND value='{}'"
+                    .format(key, url)())
             if info:
                 db.execute("INSERT INTO CollectionIdlists VALUES ({}, {}, {});"
                         .format(id, position, info["id"]))

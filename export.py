@@ -4,6 +4,7 @@
 
 from utils import MedialibProgram
 from sys import stdout, stderr
+from fields import key
 from progress import LabeledProgress
 
 class Export(MedialibProgram):
@@ -51,10 +52,10 @@ class Export(MedialibProgram):
                 pbar = LabeledProgress(playlist, maxval=nsongs)
                 def export(target):
                     for row in db.execute(
-                            "SELECT value, position "
+                            "SELECT value as {key}, position "
                             "FROM CollectionIdlists JOIN Media on id=mid "
-                            "WHERE key='url' AND collid='{}' "
-                            "ORDER BY position ASC".format(id)):
+                            "WHERE key='{key}' AND collid='{id}' "
+                            "ORDER BY position ASC".format(key=key, id=id)):
                         print(row["value"], file=target)
                         pbar.update(row["position"])
                 process(playlist)
