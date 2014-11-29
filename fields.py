@@ -7,11 +7,16 @@ values = {"timesplayed", "laststarted"}
 fields = tuple([key] + sorted(values))
 
 
-from utils import MedialibProgram, SingleFileProgram
+from utils import MedialibProgram, SingleFileProgram, CLProgram
 
 class MLibCSVAdapter(MedialibProgram, SingleFileProgram):
     def __init__(self, mode, filedesc):
         super().__init__(mode, filedesc, ext=".csv")
+
+    @staticmethod
+    def reject(row, message):
+        CLProgram.warn(row[key], message)
+MedialibProgram.reject = staticmethod(MLibCSVAdapter.reject)
 
 
 from itertools import starmap, repeat

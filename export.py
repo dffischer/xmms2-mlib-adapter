@@ -3,7 +3,7 @@
 """Exports playlists to plain text files - which are indeed m3u8-Playlists."""
 
 from utils import MedialibProgram
-from sys import stdout, stderr
+from sys import stdout
 from fields import key
 from progress import LabeledProgress
 
@@ -34,7 +34,7 @@ class Export(MedialibProgram):
             .format(str(playlists).strip('[]')))}
             for playlist in playlists:
                 if playlist not in ids:
-                    print(playlist + " is not a list of songs", file=stderr)
+                    self.warn(playlist, "not a list of songs")
             playlists = ids
         if out == "-":
             def process(playlist):
@@ -47,7 +47,7 @@ class Export(MedialibProgram):
             nsongs = db.execute("SELECT COUNT(mid) FROM CollectionIdlists WHERE collid='{}';"
                     .format(id)).fetchone()[0]
             if nsongs < 1:
-                print(playlist + " is empty", file=stderr)
+                self.warn(playlist, "empty")
             else:
                 pbar = LabeledProgress(playlist, maxval=nsongs)
                 def export(target):

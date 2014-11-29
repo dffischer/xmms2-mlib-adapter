@@ -3,7 +3,7 @@
 """Utilities to create programs that transfer data between xmms2 media libraries and files."""
 
 from argparse import ArgumentParser, FileType
-from sys import modules
+from sys import modules, stderr
 from os.path import expanduser
 from sqlite3 import connect, Row
 
@@ -20,6 +20,10 @@ class CLProgram(ArgumentParser):
 
     def process(self, **kwargs):
         self.exec(**kwargs)
+
+    @staticmethod
+    def warn(item, message):
+        print("\033[K\r", item, ': ', message, sep='', file=stderr)
 
 
 class MedialibProgram(CLProgram):

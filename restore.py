@@ -6,7 +6,6 @@
 from fields import *
 from csv import DictReader, DictWriter
 from progress import FileProgress
-from sys import stderr
 from argparse import FileType
 from contextlib import ExitStack
 from functools import partial
@@ -30,10 +29,6 @@ class Restore(MLibCSVAdapter):
                 ignored, unless a filename is given in which case they are
                 written there unchanged. - directs to the standard output.""")
 
-    @staticmethod
-    def warn(message, row):
-        print("\033[K\r", row[key], ': ', message, sep='', file=stderr)
-
     def exec(self, db, file, rejects, update):
         with ExitStack() as stack:
             @Cache.filled({null: null})
@@ -44,7 +39,7 @@ class Restore(MLibCSVAdapter):
                 return writer
             worker = (partial(Update, prepare_writer(update).writerow) if update else Insert)(db,
                     prepare_writer(rejects).writerow if rejects else
-                    partial(self.warn, "not in library"))
+                    partial(self.reject, message="not in library"))
 
             pbar = FileProgress(file)
             for row in DictReader(file):

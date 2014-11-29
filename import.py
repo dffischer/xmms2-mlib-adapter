@@ -5,7 +5,6 @@
 from utils import MedialibProgram, MultiFileProgram
 from os.path import basename, splitext
 from progress import FileProgress, LabeledProgress
-from sys import stderr
 from fields import idquery
 
 class MultifileProgress(FileProgress, LabeledProgress):
@@ -35,7 +34,7 @@ class Import(MedialibProgram, MultiFileProgram):
                 db.execute("INSERT INTO CollectionIdlists VALUES ({}, {}, {});"
                         .format(id, position, info["id"]))
             else:
-                print(url, " not found in library", file=stderr)
+                self.warn(url, "not found in library")
             pbar.step()
         pbar.finish()
 
