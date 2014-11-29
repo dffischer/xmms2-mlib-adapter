@@ -14,9 +14,12 @@ def exec(db, prefix, file):
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
         .fetchone()[0])
     for row in db.execute(infoquery):
-        out.writerow(dict(
-            {field: row[field] for field in values},
-            **{key: prefix.remove(row[key])}))
+        try:
+            out.writerow(dict(
+                {field: row[field] for field in values},
+                **{key: prefix.remove(row[key])}))
+        except ValueError:
+            MLibCSVAdapter.reject(row, "lacking prefix")
         pbar.step()
     pbar.finish()
 

@@ -56,7 +56,10 @@ class Export(MedialibProgram):
                             "FROM CollectionIdlists JOIN Media on id=mid "
                             "WHERE key='{key}' AND collid='{id}' "
                             "ORDER BY position ASC".format(key=key, id=id)):
-                        print(prefix.remove(row["value"]), file=target)
+                        try:
+                            print(prefix.remove(row[key]), file=target)
+                        except ValueError:
+                            self.reject(row, "lacking prefix")
                         pbar.update(row["position"])
                 process(playlist)
                 pbar.finish()

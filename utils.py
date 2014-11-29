@@ -41,7 +41,10 @@ class Prefix(object):
         return self.str + str
 
     def remove(self, str):
-        return str[len(self.str):] if str.startswith(self.str) else str
+        if str.startswith(self.str):
+            return str[len(self.str):]
+        else:
+            raise ValueError("prefix lacking")
 
     def __bool__(self):
         return bool(self.str)
