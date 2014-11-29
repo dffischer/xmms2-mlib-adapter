@@ -7,14 +7,16 @@ from fields import key, values, fields, MLibCSVAdapter, infoquery
 from csv import DictWriter
 from progress import OrderlyProgress
 
-def exec(db, file):
-    out = DictWriter(file, fields, extrasaction='ignore')
+def exec(db, prefix, file):
+    out = DictWriter(file, fields)
     out.writeheader()
     pbar = OrderlyProgress(db.execute(
         "SELECT COUNT(DISTINCT id) FROM Media WHERE key='{}';".format(fields[1]))
         .fetchone()[0])
     for row in db.execute(infoquery):
-        out.writerow(row)
+        out.writerow(dict(
+            {field: row[field] for field in values},
+            **{key: prefix.remove(row[key])}))
         pbar.step()
     pbar.finish()
 

@@ -26,6 +26,21 @@ class CLProgram(ArgumentParser):
         print("\033[K\r", item, ': ', message, sep='', file=stderr)
 
 
+class Prefix(object):
+    """prefix to append and remove from strings"""
+
+    def __init__(self, str):
+        self.str = str
+
+    def prepend(self, str):
+        return self.str + str
+
+    def remove(self, str):
+        return str[len(self.str):] if str.startswith(self.str) else str
+
+    def __bool__(self):
+        return bool(self.str)
+
 class MedialibProgram(CLProgram):
     """Program working with xmms2 media libraries."""
 
@@ -33,6 +48,10 @@ class MedialibProgram(CLProgram):
         super().__init__(*args, **kwargs)
         self.add_argument("-l", "--library", default=expanduser("~/.config/xmms2/medialib.db"),
                 help="Use a given library instead of %(default)s.")
+        self.add_argument("-p", "--prefix", type=Prefix, default="file://", help="""
+                Prefix for song URLs to assume present in the library but ommitted in
+                files. It will be stripped while exporting omitting entries without
+                and added when needed while importing. Defaults to '%(default)s'.""")
 
     def process(self, library, **kwargs):
         with connect(library) as db:

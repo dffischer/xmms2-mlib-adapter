@@ -29,7 +29,7 @@ class Restore(MLibCSVAdapter):
                 ignored, unless a filename is given in which case they are
                 written there unchanged. - directs to the standard output.""")
 
-    def exec(self, db, file, rejects, update):
+    def exec(self, db, prefix, file, rejects, update):
         with ExitStack() as stack:
             @Cache.filled({null: null})
             def prepare_writer(file):
@@ -37,7 +37,8 @@ class Restore(MLibCSVAdapter):
                 writer = DictWriter(file, fields)
                 writer.writeheader()
                 return writer
-            worker = (partial(Update, prepare_writer(update).writerow) if update else Insert)(db,
+            worker = (partial(Update, prepare_writer(update).writerow) if update else Insert)(
+                    db, prefix,
                     prepare_writer(rejects).writerow if rejects else
                     partial(self.reject, message="not in library"))
 
@@ -52,12 +53,13 @@ class Insert(object):
 
     query = idquery
 
-    def __init__(self, db, missing_handler):
+    def __init__(self, db, prefix, missing_handler):
         self.db = db
+        self.prefix = prefix
         self.handle_missing = missing_handler
 
     def process(self, row):
-        info = self.db.execute(self.query.format(row[key])).fetchone()
+        info = self.db.execute(self.query.format(self.prefix.prepend(row[key]))).fetchone()
         if info:
             self.update(info, row)
         else:

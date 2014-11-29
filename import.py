@@ -20,7 +20,7 @@ class Import(MedialibProgram, MultiFileProgram):
                 "the templates {file}, {name} and {ext} will be replaced with the full filename, "
                 "the same stripped from its extension and the extension only, respectively.")
 
-    def exec(self, db, file, name):
+    def exec(self, db, prefix, file, name):
         name = self.format_name(name, file)
         pbar = MultifileProgress(file, name)
         id = db.execute("INSERT INTO CollectionOperators (type) VALUES (9);").lastrowid
@@ -29,7 +29,7 @@ class Import(MedialibProgram, MultiFileProgram):
         db.execute("INSERT INTO CollectionAttributes VALUES ({}, 'position', -1);".format(id))
         for position, url in enumerate(file):
             url = url.strip()
-            info = db.execute(idquery.format(url)).fetchone()
+            info = db.execute(prefix.prepend(idquery.format(url))).fetchone()
             if info:
                 db.execute("INSERT INTO CollectionIdlists VALUES ({}, {}, {});"
                         .format(id, position, info["id"]))

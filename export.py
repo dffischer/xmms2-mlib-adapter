@@ -20,7 +20,7 @@ class Export(MedialibProgram):
                 Write to a stdout instead of a file. This has the exact same effect as specifing an
                 output filename of -. Note that this will append multiple playlists into one.""")
 
-    def exec(self, db, playlists, out, **kwargs):
+    def exec(self, db, prefix, playlists, out, **kwargs):
         if not playlists:
             playlists = {row["name"]: row["id"] for row in db.execute(
                 "SELECT id, name "
@@ -56,7 +56,7 @@ class Export(MedialibProgram):
                             "FROM CollectionIdlists JOIN Media on id=mid "
                             "WHERE key='{key}' AND collid='{id}' "
                             "ORDER BY position ASC".format(key=key, id=id)):
-                        print(row["value"], file=target)
+                        print(prefix.remove(row["value"]), file=target)
                         pbar.update(row["position"])
                 process(playlist)
                 pbar.finish()
