@@ -27,9 +27,11 @@ class Import(MedialibProgram, MultiFileProgram):
         db.execute("INSERT INTO CollectionLabels VALUES ({id}, 1, '{name}');".format(
             id=id, name=name))
         db.execute("INSERT INTO CollectionAttributes VALUES ({}, 'position', -1);".format(id))
+        def inform(key):
+            return db.execute(idquery(key)).fetchone()
         for position, url in enumerate(file):
             url = url.strip()
-            info = db.execute(prefix.prepend(idquery(url))).fetchone()
+            info = inform(prefix.prepend(url)) or inform(url)
             if info:
                 db.execute("INSERT INTO CollectionIdlists VALUES ({}, {}, {});"
                         .format(id, position, info["id"]))

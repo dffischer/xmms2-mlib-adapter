@@ -58,8 +58,11 @@ class Insert(object):
         self.prefix = prefix
         self.handle_missing = missing_handler
 
+    def inform(self, key):
+        return self.db.execute(self.query(key)).fetchone()
+
     def process(self, row):
-        info = self.db.execute(self.query(self.prefix.prepend(row[key]))).fetchone()
+        info = self.inform(self.prefix.prepend(row[key])) or self.inform(row[key])
         if info:
             self.update(info, row)
         else:
