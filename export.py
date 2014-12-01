@@ -16,12 +16,11 @@ class Export(MedialibProgram):
                 do not know what this means, you probably do only have exportable playlists.""")
         self.add_argument("playlists", metavar="playlist", nargs="*", help="""Select playlists
                 for export. When no playlist is selected, all of them will be exported.""")
-        self.add_argument("-o", "--out", default='{name}.m3u8', help="""
-                Write to a given file. For multiple playlists, this is treated as a pattern wherein
-                {name} will be replaced by the name of the playlist. Defaults to {name}.m3u8.""")
-        self.add_argument("-s", "--stdout", action='store_const', dest='out', const="-", help="""
-                Write to a stdout instead of a file. This has the exact same effect as specifing an
-                output filename of -. Note that this will append multiple playlists into one.""")
+        self.add_argument("-o", "--out", metavar="outfile.m3u", default='{name}.m3u8', help="""
+                Write to a given file. As multiple playlists are likely to be processed,
+                this is treated as a pattern wherein {name} will be replaced by the name
+                of the playlist. Defaults to %(default)s. - directs to the standard
+                output. Note that this will append multiple playlists into one.""")
 
     def exec(self, db, prefix, playlists, out, **kwargs):
         if not playlists:
