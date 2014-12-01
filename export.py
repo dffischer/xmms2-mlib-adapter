@@ -3,9 +3,12 @@
 """Exports playlists to plain text files - which are indeed m3u8-Playlists."""
 
 from utils import MedialibProgram
-from sys import stdout
 from fields import key
 from progress import LabeledProgress
+from argparse import FileType
+from functools import partial
+from contextlib import ExitStack
+from cache import Cache
 
 class Export(MedialibProgram):
     def __init__(self):
@@ -36,21 +39,18 @@ class Export(MedialibProgram):
                 if playlist not in ids:
                     self.warn(playlist, "not a list of songs")
             playlists = ids
-        if out == "-":
-            def process(playlist):
-                export(stdout)
-        else:
-            def process(playlist):
-                with open(out.format(name=playlist), 'w') as file:
-                    export(file)
-        for playlist, id in playlists.items():
-            nsongs = db.execute("SELECT COUNT(mid) FROM CollectionIdlists WHERE collid='{}';"
-                    .format(id)).fetchone()[0]
-            if nsongs < 1:
-                self.warn(playlist, "empty")
-            else:
-                pbar = LabeledProgress(playlist, maxval=nsongs)
-                def export(target):
+        with ExitStack() as stack:
+            open = Cache(partial(
+                lambda open, filename: stack.push(open(filename)),
+                FileType('w')))
+            for playlist, id in playlists.items():
+                nsongs = db.execute("SELECT COUNT(mid) FROM CollectionIdlists WHERE collid='{}';"
+                        .format(id)).fetchone()[0]
+                if nsongs < 1:
+                    self.warn(playlist, "empty")
+                else:
+                    target = open(out.format(name=playlist))
+                    pbar = LabeledProgress(playlist, maxval=nsongs)
                     for row in db.execute(
                             "SELECT value as {key}, position "
                             "FROM CollectionIdlists JOIN Media on id=mid "
@@ -61,8 +61,7 @@ class Export(MedialibProgram):
                         except ValueError:
                             self.reject(row, "lacking prefix")
                         pbar.update(row["position"])
-                process(playlist)
-                pbar.finish()
+                    pbar.finish()
 
 
 if __name__ == '__main__':
