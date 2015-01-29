@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# utils.py
+# program.py
 """Utilities to create programs that transfer data between xmms2 media libraries and files."""
 
 from argparse import ArgumentParser, FileType
