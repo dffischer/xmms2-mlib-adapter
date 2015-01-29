@@ -3,9 +3,9 @@
 """Backs up song statistics - timesplayed and laststarted
 - from an xmms2 media library to a csv file."""
 
-from fields import key, values, fields, MLibCSVAdapter, infoquery
+from .fields import key, values, fields, MLibCSVAdapter, infoquery
 from csv import DictWriter
-from progress import OrderlyProgress
+from .progress import OrderlyProgress
 
 def exec(db, prefix, file):
     out = DictWriter(file, fields)

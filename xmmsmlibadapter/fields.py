@@ -7,7 +7,7 @@ values = {"timesplayed", "laststarted"}
 fields = tuple([key] + sorted(values))
 
 
-from utils import MedialibProgram, SingleFileProgram, CLProgram
+from .utils import MedialibProgram, SingleFileProgram, CLProgram
 
 class MLibCSVAdapter(MedialibProgram, SingleFileProgram):
     def __init__(self, mode, filedesc):

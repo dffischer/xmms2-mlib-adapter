@@ -2,13 +2,13 @@
 # export.py
 """Exports playlists to plain text files - which are indeed m3u8-Playlists."""
 
-from utils import MedialibProgram
-from fields import key
-from progress import LabeledProgress
+from .utils import MedialibProgram
+from .fields import key
+from .progress import LabeledProgress
 from argparse import FileType
 from functools import partial
 from contextlib import ExitStack
-from cache import Cache
+from .cache import Cache
 
 class Export(MedialibProgram):
     def __init__(self):

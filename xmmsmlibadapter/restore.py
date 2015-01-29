@@ -3,14 +3,14 @@
 """Restores song statistics - timesplayed and laststarted
 - from a csv file into an xmms2 media library."""
 
-from fields import *
+from .fields import *
 from csv import DictReader, DictWriter
-from progress import FileProgress
+from .progress import FileProgress
 from argparse import FileType
 from contextlib import ExitStack
 from functools import partial
-from cache import Cache, null
-from context import MaybeCallback
+from .cache import Cache, null
+from .context import MaybeCallback
 
 class Restore(MLibCSVAdapter):
     def __init__(self):

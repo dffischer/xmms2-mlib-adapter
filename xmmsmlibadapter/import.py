@@ -2,10 +2,10 @@
 # import.py
 """Imports m3u-Playlists - textfiles with one song path per line - into xmms2."""
 
-from utils import MedialibProgram, MultiFileProgram
+from .utils import MedialibProgram, MultiFileProgram
 from os.path import basename, splitext
-from progress import FileProgress, LabeledProgress
-from fields import idquery
+from .progress import FileProgress, LabeledProgress
+from .fields import idquery
 
 class MultifileProgress(FileProgress, LabeledProgress):
     pass
