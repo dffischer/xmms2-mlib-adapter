@@ -13,8 +13,10 @@ from sqlite3 import connect, Row
 class CLProgram(ArgumentParser):
     """Command-line program"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, short=None, *args, **kwargs):
         super().__init__(description=modules[__name__].__doc__, *args, **kwargs)
+        if short:
+            self.short = short
 
     def run(self, exec=None):
         if exec:

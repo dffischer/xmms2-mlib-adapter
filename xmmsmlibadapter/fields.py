@@ -10,8 +10,8 @@ fields = tuple([key] + sorted(values))
 from .program import MedialibProgram, SingleFileProgram, CLProgram
 
 class MLibCSVAdapter(MedialibProgram, SingleFileProgram):
-    def __init__(self, mode, filedesc):
-        super().__init__(mode, filedesc, ext=".csv")
+    def __init__(self, mode, filedesc, *args, **kwargs):
+        super().__init__(mode, filedesc, ".csv", *args, **kwargs)
 
     @staticmethod
     def reject(row, message):
