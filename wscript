@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+APPNAME = "xmms2 media library adapters"
+
 def options(ctx):
     ctx.load('manpyger')
 
