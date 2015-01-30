@@ -22,4 +22,7 @@ def build(ctx):
                 starter="xmmsmlibadapter." + binary.rpartition('-')[2], target=binary,
                 extra=OrderedDict((
                     ("SEE ALSO", ', '.join(
-                        bold(ref) + "(1)" for ref in binaries if ref is not binary)), ))
+                        bold(ref) + "(1)" for ref in binaries if ref is not binary)),
+                    ("AUTHORS", """The xmms2 media library adapters were initially
+                    developed by XZS <d.f.fischer@web.de>.\n\n\nThe code lives on
+                    github <http://github.com/dffischer/xmms2-mlib-adapters>."""))))
