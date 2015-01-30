@@ -9,4 +9,4 @@ def configure(ctx):
     ctx.check_python_module('progressbar')
 
 def build(ctx):
-    ctx(features="py", root="xmmsmlibadapter")
+    ctx(features="py entrypynt", root="xmmsmlibadapter")
