@@ -24,4 +24,5 @@ def exec(db, prefix, file):
     pbar.finish()
 
 if __name__ == '__main__':
-    MLibCSVAdapter('w', "Write to a given file instead of the standard output.").run(exec)
+    MLibCSVAdapter('w', "Write to a given file instead of the standard output.",
+            "export xmms2 media statistics").run(exec)

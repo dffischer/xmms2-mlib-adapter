@@ -14,7 +14,8 @@ from .context import MaybeCallback
 
 class Restore(MLibCSVAdapter):
     def __init__(self):
-        super().__init__('r', "Read from a given file instead of the standard input.")
+        super().__init__('r', "Read from a given file instead of the standard input.",
+                "import xmms2 media statistics")
         file = Cache(FileType('w'))
         self.add_argument("-r", "--rejects", metavar="rejects.csv",
                 nargs="?", type=file, const=null, help="""

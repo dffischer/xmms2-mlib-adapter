@@ -12,8 +12,9 @@ from .cache import Cache
 
 class Export(MedialibProgram):
     def __init__(self):
-        super().__init__(epilog="""Only collections of the type idlist can be exported. If you
-                do not know what this means, you probably do only have exportable playlists.""")
+        super().__init__("export xmms2 playlist", epilog="""Only collections
+                of the type idlist can be exported. If you  do not know what
+                this means, you probably do only have exportable playlists.""")
         self.add_argument("playlists", metavar="playlist", nargs="*", help="""Select playlists
                 for export. When no playlist is selected, all of them will be exported.""")
         self.add_argument("-o", "--out", metavar="outfile.m3u", default='{name}.m3u8', help="""
