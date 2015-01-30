@@ -14,7 +14,7 @@ class CLProgram(ArgumentParser):
     """Command-line program"""
 
     def __init__(self, short=None, *args, **kwargs):
-        super().__init__(description=modules[__name__].__doc__, *args, **kwargs)
+        super().__init__(description=modules['__main__'].__doc__, *args, **kwargs)
         if short:
             self.short = short
 
