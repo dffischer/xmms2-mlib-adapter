@@ -77,10 +77,7 @@ class DictRow(Row):
 
 # ----- working with files -----
 
-class FileProgram(CLProgram):
-    """Program working with files."""
-
-class SingleFileProgram(FileProgram):
+class SingleFileProgram(CLProgram):
     """Program working with one file or standard streams."""
 
     def __init__(self, mode, filedesc, ext="", *args, **kwargs):
@@ -92,10 +89,8 @@ class SingleFileProgram(FileProgram):
         with file:
             super().process(file=file, **kwargs)
 
-class MultiFileProgram(FileProgram):
+class MultiFileProgram(CLProgram):
     """Program working with multiple files or standard stream."""
-
-    nargs='*'
 
     def __init__(self, mode, filedesc, *args, **kwargs):
         super().__init__(*args, **kwargs)
