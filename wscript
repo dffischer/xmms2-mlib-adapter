@@ -3,6 +3,7 @@
 APPNAME = "xmms2 media library adapters"
 
 from collections import OrderedDict
+from manpager.markup import bold
 
 def options(ctx):
     ctx.load('manpyger')
@@ -18,4 +19,4 @@ def build(ctx):
     ctx(features="py entrypynt", root="xmmsmlibadapter",
             main=[name.rpartition('-')[2] for name in binaries], target=binaries,
             extra=OrderedDict((
-                ("SEE ALSO", ', '.join(ref + "(1)" for ref in binaries)), )))
+                ("SEE ALSO", ', '.join(bold(ref) + "(1)" for ref in binaries)), )))
