@@ -4,6 +4,7 @@ APPNAME = "xmms2 media library adapters"
 
 from collections import OrderedDict
 from manpager.markup import bold
+from waflib.Utils import subst_vars
 
 def options(ctx):
     ctx.load('manpyger')
@@ -26,3 +27,4 @@ def build(ctx):
                     ("AUTHORS", """The xmms2 media library adapters were initially
                     developed by XZS <d.f.fischer@web.de>.\n\n\nThe code lives on
                     github <http://github.com/dffischer/xmms2-mlib-adapters>."""))))
+    ctx.install_files(subst_vars("${DOCDIR}", ctx.env), ctx.path.find_dir("doc").ant_glob('*'))
