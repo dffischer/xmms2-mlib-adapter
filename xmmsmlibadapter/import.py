@@ -12,10 +12,15 @@ class MultifileProgress(FileProgress, LabeledProgress):
 
 class Import(MedialibProgram, MultiFileProgram):
     def __init__(self):
-        super().__init__('r', """
-                Lists the files to import playlists from. When no file or
-                - is given, data is expected from the standard input.""",
-                "import xmms2 playlists")
+        super().__init__('r', """Lists the files to import playlists from. When no file or
+                - is given, data is expected from the standard input.""", "import xmms2 playlists",
+                epilog="""When a path cannot be found, it is searched without the prefix
+                subsequently. So this program can import playlists composed of paths with
+                and without prefix mixed. Contrary \fBxmms2-playlist-export\fP refuses to
+                generate such, instead rejecting every path that does not start with the
+                specified prefix. To generate a mixed export, do not use the -p option when
+                exporting, but instead pipe the resulting m3u through "sed 's/^prefix//' to
+                remove it only when present, silently ignoring songs lacking the prefix.""")
         self.add_argument("-n", "--name", metavar="name", default="{name}", help=
                 "Select a name for the imported playlists. To name multiple imported lists, "
                 "the templates {file}, {name} and {ext} will be replaced with the full filename, "
