@@ -15,6 +15,8 @@ chmod 755 waf
 ./waf configure install
 ```
 
+Archlinux users have [a package in the AUR](https://aur.archlinux.org/packages/python-xmms2-mlib-adapter-git/).
+
 
 ## XMMS Version
 
