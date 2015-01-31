@@ -1,6 +1,6 @@
 # xmms2-mlib-adapter
 
-These tools transfer data between xmms2 media libraries. They operate directly on the library instead of connecting to xmms2 as a client. That means that they are able to rescue data from broken libraries or merge data from multiple databases into one. They can also be used to simply backup your data in an easy to read text format.
+These tools transfer data between xmms2 media libraries. They operate directly on the library instead of connecting to xmms2 as a client. That means that they are able to [rescue data from broken libraries](rescue.md) or merge data from multiple databases into one. They can also be used to simply backup your data in an easy to read text format.
 
 For further information, call them with the parameter `-h`.
 
