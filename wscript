@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-APPNAME = "xmms2 media library adapters"
+APPNAME = "xmms2-mlib-adapter"
 
 from collections import OrderedDict
 from manpager.markup import bold
