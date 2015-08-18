@@ -15,7 +15,7 @@ chmod 755 waf
 ./waf configure install
 ```
 
-Archlinux users have [a package in the AUR](https://aur.archlinux.org/packages/python-xmms2-mlib-adapter-git/).
+Archlinux users have [a package in the AUR](https://aur.archlinux.org/packages/python-xmms2-mlib-adapter-git/). To use the [PKGBUILD](PKGBUILD) as it is kept in this repository, [the makepkg-template for git](https://github.com/dffischer/git-makepkg-template) has to be installed.
 
 
 ## XMMS Version
