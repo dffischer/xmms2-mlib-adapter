@@ -1,2 +1,5 @@
 __pycache__
 .lock-*
+*/
+!xmmsmlibadapter
+*.pkg.tar.xz
