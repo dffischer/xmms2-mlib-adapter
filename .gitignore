@@ -4,3 +4,4 @@ __pycache__
 !xmmsmlibadapter
 *.pkg.tar.xz
 *.expanded
+.SRCINFO
